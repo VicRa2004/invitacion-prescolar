@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>¡Nuestra Gran Aventura! - Escuela Rural</title>
+    <!-- Tailwind CSS para el diseño responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka para un diseño redondeado y juguetón -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome para iconos infantiles y bonitos -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Fredoka", "sans-serif"],
+            },
+            colors: {
+              candyPink: "#FFB7B2",
+              pastelBlue: "#B5E2FA",
+              magicPurple: "#E1BEE7",
+              mintGreen: "#C7CEEA",
+              sunnyYellow: "#FFDAC1",
+              happyOrange: "#FFD1B3",
+              forestGreen: "#E2F0CB",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Fredoka", sans-serif;
+        background: linear-gradient(135deg, #fbfaf5 0%, #f0f7f4 100%);
+        overflow-x: hidden;
+      }
+
+      /* Efecto de nube flotante */
+      @keyframes floatCloud {
+        0% {
+          transform: translateX(-10%) translateY(0px);
+        }
+        50% {
+          transform: translateX(5%) translateY(-10px);
+        }
+        100% {
+          transform: translateX(-10%) translateY(0px);
+        }
+      }
+      .cloud-slow {
+        animation: floatCloud 20s ease-in-out infinite;
+      }
+      .cloud-fast {
+        animation: floatCloud 12s ease-in-out infinite;
+      }
+
+      /* Animación suave para globos */
+      @keyframes floatBalloon {
+        0% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-15px) rotate(3deg);
+        }
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+      }
+      .balloon-anim {
+        animation: floatBalloon 6s ease-in-out infinite;
+      }
+
+      /* Pulso suave y divertido para elementos clave */
+      @keyframes playfulPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.03);
+        }
+      }
+      .pulse-card {
+        animation: playfulPulse 4s infinite;
+      }
+
+      /* Patrón de fondo sutil para la temática infantil */
+      .kids-pattern {
+        background-image:
+          radial-gradient(#ffb7b2 1.5px, transparent 1.5px),
+          radial-gradient(#c7ceea 1.5px, #fbfaf5 1.5px);
+        background-size: 40px 40px;
+        background-position:
+          0 0,
+          20px 20px;
+        opacity: 0.5;
+      }
+
+      /* Estilo para los confetis del canvas */
+      #confetti-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 999;
+      }
+
+      /* Efecto Washi Tape para sostener la foto */
+      .washi-tape-pink {
+        background: rgba(255, 183, 178, 0.85);
+        transform: rotate(-3deg);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      .washi-tape-blue {
+        background: rgba(181, 226, 250, 0.85);
+        transform: rotate(4deg);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+    </style>
+  </head>
+  <body class="relative min-h-screen pb-12">
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Sol y Nubes Decorativas en el Fondo -->
+    <div
+      class="absolute top-0 left-0 w-full overflow-hidden h-96 pointer-events-none select-none z-0"
+    >
+      <!-- Sol tierno sobre el paisaje -->
+      <div
+        class="absolute top-6 right-6 md:right-20 w-24 h-24 bg-yellow-300 rounded-full flex items-center justify-center shadow-md animate-pulse"
+      >
+        <span class="text-4xl">☀️</span>
+        <div
+          class="absolute inset-0 border-4 border-dashed border-yellow-400 rounded-full animate-spin"
+          style="animation-duration: 40s"
+        ></div>
+      </div>
+
+      <!-- Nubes flotantes del campo -->
+      <div class="absolute top-16 left-12 cloud-slow opacity-60">
+        <div class="bg-white w-28 h-10 rounded-full relative shadow-sm">
+          <div
+            class="bg-white w-14 h-14 rounded-full absolute -top-6 left-4"
+          ></div>
+          <div
+            class="bg-white w-12 h-12 rounded-full absolute -top-4 right-4"
+          ></div>
+        </div>
+      </div>
+      <div
+        class="absolute top-36 right-1/4 cloud-fast opacity-50 hidden md:block"
+      >
+        <div class="bg-white w-20 h-8 rounded-full relative shadow-sm">
+          <div
+            class="bg-white w-10 h-10 rounded-full absolute -top-4 left-3"
+          ></div>
+          <div
+            class="bg-white w-8 h-8 rounded-full absolute -top-3 right-3"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <main class="relative z-10 max-w-4xl mx-auto px-4 pt-12 md:pt-20">
+      <!-- Tarjeta de Bienvenida / Hero -->
+      <div
+        class="bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border-4 border-emerald-200/80 overflow-hidden text-center p-6 md:p-12 relative mb-12 transform transition-all duration-300 hover:shadow-2xl"
+      >
+        <!-- Globos interactivos en las esquinas superiores -->
+        <div
+          class="absolute -top-10 -left-6 balloon-anim hidden sm:block pointer-events-auto"
+          onclick="popBalloon(this)"
+        >
+          <span
+            class="text-6xl cursor-pointer select-none filter drop-shadow-md transition-transform hover:scale-110"
+            >🎈</span
+          >
+        </div>
+        <div
+          class="absolute -top-12 -right-6 balloon-anim hidden sm:block pointer-events-auto"
+          style="animation-delay: 2s"
+          onclick="popBalloon(this)"
+        >
+          <span
+            class="text-6xl cursor-pointer select-none filter drop-shadow-md transition-transform hover:scale-110"
+            >🎉</span
+          >
+        </div>
+
+        <!-- Etiqueta decorativa superior -->
+        <span
+          class="inline-block bg-emerald-100 text-emerald-600 font-bold px-5 py-2 rounded-full text-sm md:text-base tracking-wider uppercase mb-5 shadow-sm border border-emerald-200"
+        >
+          🌿 ¡Fiesta de Nuestra Comunidad! 🌿
+        </span>
+
+        <!-- Título Principal con temática rural cálida -->
+        <h1
+          class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-amber-500 to-pink-500 mb-6 drop-shadow-sm leading-tight"
+        >
+          ¡La Gran Celebración de<br /><span class="text-amber-500"
+            >Nuestros Pequeños!</span
+          >
+        </h1>
+
+        <p
+          class="text-lg md:text-2xl text-slate-600 max-w-2xl mx-auto mb-8 font-light leading-relaxed"
+        >
+          Nuestros pequeños de
+          <strong class="text-emerald-500 font-semibold">5 años</strong> han
+          concluido una etapa mágica llena de juegos en el patio, risas y
+          descubrimientos. ¡Queremos festejarlo en grande junto a toda la
+          comunidad escolar!
+        </p>
+
+        <!-- SECCIÓN DE LA FOTO DEL GRUPO (Estilo Polaroid Rústica) -->
+        <div class="max-w-xl mx-auto my-10 relative">
+          <!-- Cintas washi tape decorativas -->
+          <div
+            class="absolute -top-6 left-1/4 w-28 h-8 washi-tape-pink z-20 text-xs font-bold text-pink-700 flex items-center justify-center select-none"
+          >
+            ¡Los Pequeños!
+          </div>
+          <div
+            class="absolute -top-5 right-1/4 w-24 h-8 washi-tape-blue z-20 text-xs font-bold text-blue-700 flex items-center justify-center select-none"
+          >
+            Generación 2026
+          </div>
+
+          <!-- Marco Polaroid -->
+          <div
+            class="bg-white p-4 pb-8 rounded-lg shadow-lg border border-slate-100 transform -rotate-1 hover:rotate-0 transition-transform duration-300"
+          >
+            <div
+              class="overflow-hidden rounded bg-slate-50 relative aspect-[16/10] border border-slate-100"
+            >
+              <!-- Imagen del Grupo con fallback por si no carga -->
+              <img
+                id="group-photo"
+                src="https://placehold.co/800x500/E2F0CB/4A5568?text=AQU%C3%8D+VA+NUESTRA+FOTO+GRUPAL+%F0%9F%93%B8"
+                alt="Foto del Grupo de Kínder"
+                class="w-full h-full object-cover"
+                onerror="
+                  this.src =
+                    'https://placehold.co/800x500/E2F0CB/4A5568?text=Nuestros+Exploradores+%E2%9C%A8'
+                "
+              />
+              <!-- Pequeño sticker de flores decorativas -->
+              <div
+                class="absolute bottom-2 right-2 bg-yellow-100/90 text-amber-600 px-2 py-1 rounded text-xs font-bold shadow-sm"
+              >
+                🌾 Orgullo Escolar
+              </div>
+            </div>
+            <div class="mt-4 text-center">
+              <p class="font-bold text-slate-700 text-lg md:text-xl">
+                "Aventuras bajo el sol y entre árboles"
+              </p>
+              <p class="text-xs text-slate-400 mt-1">
+                Clase de 3° de Preescolar - Escuela Rural Benito Juárez
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pequeño indicador interactivo para divertirse -->
+        <p class="text-xs text-slate-400 italic mt-4">
+          <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> ¡Padres
+          e hijos: toquen los globos de las esquinas superiores para ver volar
+          la magia!
+        </p>
+      </div>
+
+      <!-- Tarjetas de Información: Fecha, Hora, Lugar, Colaboración -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <!-- Cuándo -->
+        <div
+          class="bg-white/85 backdrop-blur-sm p-6 rounded-2xl border-b-8 border-pink-300 shadow-md flex items-start space-x-4 transition-transform hover:-translate-y-1"
+        >
+          <div
+            class="bg-pink-100 p-4 rounded-xl text-pink-500 text-2xl flex-shrink-0"
+          >
+            <i class="fa-regular fa-calendar-days"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-slate-800 mb-1">
+              ¿Cuándo nos vemos?
+            </h3>
+            <p class="text-slate-600 font-medium">
+              Viernes, 19 de Junio de 2026
+            </p>
+            <p class="text-sm text-slate-500 mt-1">
+              A partir de las 12:00 PM (Al salir de clases)
+            </p>
+          </div>
+        </div>
+
+        <!-- Dónde -->
+        <div
+          class="bg-white/85 backdrop-blur-sm p-6 rounded-2xl border-b-8 border-emerald-300 shadow-md flex items-start space-x-4 transition-transform hover:-translate-y-1"
+        >
+          <div
+            class="bg-emerald-100 p-4 rounded-xl text-emerald-600 text-2xl flex-shrink-0"
+          >
+            <i class="fa-solid fa-school"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-slate-800 mb-1">¿Dónde será?</h3>
+            <p class="text-slate-600 font-medium">
+              Patio Central y Campo de la Escuela
+            </p>
+            <p class="text-sm text-slate-500 mt-1">
+              La escuela de la comunidad, bajo la gran sombra del nogal.
+            </p>
+          </div>
+        </div>
+
+        <!-- Qué traer o vestir -->
+        <div
+          class="bg-white/85 backdrop-blur-sm p-6 rounded-2xl border-b-8 border-yellow-300 shadow-md flex items-start space-x-4 transition-transform hover:-translate-y-1"
+        >
+          <div
+            class="bg-yellow-100 p-4 rounded-xl text-amber-500 text-2xl flex-shrink-0"
+          >
+            <i class="fa-solid fa-sun"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-slate-800 mb-1">
+              ¿Cómo debemos venir?
+            </h3>
+            <p class="text-slate-600 font-medium">
+              ¡Ropa muy cómoda para jugar libremente!
+            </p>
+            <p class="text-sm text-slate-500 mt-1">
+              Sugerimos gorras para el sol, zapatos/tenis resistentes y un
+              cambio de ropa (¡por si jugamos en la tierra!).
+            </p>
+          </div>
+        </div>
+
+        <!-- Colaboración comunitaria (Mesa compartida) -->
+        <div
+          class="bg-white/85 backdrop-blur-sm p-6 rounded-2xl border-b-8 border-purple-300 shadow-md flex items-start space-x-4 transition-transform hover:-translate-y-1"
+        >
+          <div
+            class="bg-purple-100 p-4 rounded-xl text-purple-500 text-2xl flex-shrink-0"
+          >
+            <i class="fa-solid fa-basket-shopping"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-slate-800 mb-1">
+              Mesa Compartida
+            </h3>
+            <p class="text-slate-600 font-medium">
+              Convivio estilo canasta colectiva
+            </p>
+            <p class="text-sm text-slate-500 mt-1">
+              Si está en sus posibilidades, podemos traer algún bocadillo, fruta
+              del huerto o agua fresca para compartir en comunidad.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notas Importantes adaptadas a la Comunidad Rural -->
+      <div
+        class="bg-white/90 backdrop-blur-md rounded-3xl p-6 md:p-10 shadow-lg border-2 border-dashed border-emerald-300/80 mb-12 relative overflow-hidden"
+      >
+        <!-- Planta rústica de fondo -->
+        <div
+          class="absolute -right-8 -bottom-8 opacity-10 text-9xl pointer-events-none"
+        >
+          🌿
+        </div>
+
+        <h4
+          class="text-2xl font-bold text-emerald-800 mb-5 flex items-center gap-2"
+        >
+          <i class="fa-solid fa-circle-info text-amber-500"></i> Notas y
+          sugerencias para nuestras familias:
+        </h4>
+
+        <ul class="text-slate-600 space-y-4 list-none pl-0">
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-500 text-lg mt-0.5"
+              ><i class="fa-solid fa-seedling"></i
+            ></span>
+            <div>
+              <strong>Cuidado del Entorno:</strong> Fomentemos que los niños
+              respeten el jardín y los árboles de la escuela. Tendremos botes de
+              basura identificados para mantener limpio nuestro espacio natural.
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-500 text-lg mt-0.5"
+              ><i class="fa-solid fa-handshake-angle"></i
+            ></span>
+            <div>
+              <strong>Apoyo Comunitario:</strong> Toda ayuda es bienvenida. Si
+              algún padre o madre de familia desea sumarse temprano para colocar
+              las mesas bajo la sombra o decorar con papel picado, ¡les
+              esperaremos con los brazos abiertos!
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-500 text-lg mt-0.5"
+              ><i class="fa-solid fa-truck-pickup"></i
+            ></span>
+            <div>
+              <strong>Organización del Transporte:</strong> Al ser un camino
+              rural, sugerimos ponernos de acuerdo entre familias vecinas para
+              compartir traslados o caminar juntos en grupos. ¡Hagamos del
+              trayecto parte de la aventura!
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-500 text-lg mt-0.5"
+              ><i class="fa-solid fa-kit-medical"></i
+            ></span>
+            <div>
+              <strong>Salud e Hidratación:</strong> Recomendamos traer un
+              cilindro o botellita de agua para cada niño. También contaremos
+              con un pequeño botiquín de primeros auxilios por cualquier raspón
+              durante los juegos de campo.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-12 text-slate-400 text-sm px-4">
+      <p class="mb-2">
+        🎈 Diseñado con cariño para honrar el esfuerzo y la sonrisa de nuestros
+        niños de 5 añitos.
+      </p>
+      <p>
+        © 2026 - Escuela Primaria y Jardín de Niños de la Comunidad. Juntos
+        florecemos.
+      </p>
+    </footer>
+
+    <script>
+      // --- 1. SISTEMA DE AUDIO INTERACTIVO (EFECTO POP DE BURBUJA) ---
+      // Genera un sonido alegre y cómico de "burbuja o pop" usando la Web Audio API nativa sin depender de archivos de audio externos.
+      function playPopSound() {
+        try {
+          const audioCtx = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
+
+          // Configurar generador de oscilador
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = "sine";
+          // El tono sube de forma rápida exponencial para emular un brinco juguetón
+          osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(
+            800,
+            audioCtx.currentTime + 0.1,
+          );
+
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(
+            0.01,
+            audioCtx.currentTime + 0.12,
+          );
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.15);
+        } catch (e) {
+          console.log(
+            "Audio interactivo en espera de interacción previa del usuario.",
+          );
+        }
+      }
+
+      // --- 2. ACCIONES DE LOS GLOBOS INTERACTIVOS ---
+      // Hace flotar los globos con una animación de rebote, reproduce sonido y lanza confeti
+      function popBalloon(element) {
+        playPopSound();
+
+        // Animación inmediata de agrandado y desvanecimiento
+        element.style.transform = "scale(1.6) translateY(-20px)";
+        element.style.opacity = "0";
+        element.style.pointerEvents = "none";
+
+        // Localizar coordenadas del globo para el confeti
+        const rect = element.getBoundingClientRect();
+        launchConfettiAt(
+          rect.left + rect.width / 2,
+          rect.top + rect.height / 2,
+        );
+
+        // Reaparece amigablemente tras 6 segundos con otro emoji sorpresa
+        setTimeout(() => {
+          const elements = ["🎈", "🎉", "🧸", "🌻", "🦖", "🌟", "🍎"];
+          element.innerHTML = `<span class="text-6xl cursor-pointer select-none filter drop-shadow-md transition-transform hover:scale-110">${elements[Math.floor(Math.random() * elements.length)]}</span>`;
+          element.style.transform = "scale(1) translateY(0)";
+          element.style.opacity = "1";
+          element.style.pointerEvents = "auto";
+        }, 6000);
+      }
+
+      // --- 3. MOTOR DE RENDERIZADO DE CONFETI EN CANVAS ---
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      let confetti = [];
+      let animationFrameId;
+
+      // Ajustar tamaño del lienzo al tamaño de la pantalla
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      class ConfettiParticle {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          this.size = Math.random() * 8 + 6;
+          // Paleta de colores suaves y campestres
+          this.color = [
+            "#FFB7B2",
+            "#B5E2FA",
+            "#E1BEE7",
+            "#FFDAC1",
+            "#C7CEEA",
+            "#E2F0CB",
+          ][Math.floor(Math.random() * 6)];
+          this.speedX = Math.random() * 6 - 3;
+          this.speedY = Math.random() * -7 - 3; // Impulso hacia arriba
+          this.gravity = 0.18;
+          this.rotation = Math.random() * 360;
+          this.rotationSpeed = Math.random() * 8 - 4;
+          this.opacity = 1;
+        }
+
+        update() {
+          this.speedY += this.gravity;
+          this.x += this.speedX;
+          this.y += this.speedY;
+          this.rotation += this.rotationSpeed;
+          // Desvanecer progresivamente al descender
+          if (this.speedY > 0) {
+            this.opacity -= 0.009;
+          }
+        }
+
+        draw() {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.rotate((this.rotation * Math.PI) / 180);
+          ctx.globalAlpha = this.opacity;
+          ctx.fillStyle = this.color;
+          // Dibujar pequeños papelitos rectangulares
+          ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+          ctx.restore();
+        }
+      }
+
+      function animateConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = confetti.length - 1; i >= 0; i--) {
+          confetti[i].update();
+          confetti[i].draw();
+
+          // Remover partículas que salen del lienzo o pierden visibilidad
+          if (confetti[i].y > canvas.height || confetti[i].opacity <= 0) {
+            confetti.splice(i, 1);
+          }
+        }
+
+        if (confetti.length > 0) {
+          animationFrameId = requestAnimationFrame(animateConfetti);
+        } else {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+      }
+
+      // Detonar partículas en un punto preciso de la pantalla
+      function launchConfettiAt(x, y) {
+        for (let i = 0; i < 35; i++) {
+          confetti.push(new ConfettiParticle(x, y));
+        }
+        if (!animationFrameId) {
+          animateConfetti();
+        }
+      }
+
+      // Lluvia mágica automática inicial al abrir la invitación
+      window.onload = function () {
+        setTimeout(() => {
+          // Pequeño guiño de confeti cayendo desde el cielo central
+          launchConfettiAt(window.innerWidth / 2, window.innerHeight / 4);
+        }, 1000);
+      };
+    </script>
+  </body>
+</html>

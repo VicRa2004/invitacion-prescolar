@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Fredoka", sans-serif;
+
+  --color-candy-pink: #FFB7B2;
+  --color-pastel-blue: #B5E2FA;
+  --color-magic-purple: #E1BEE7;
+  --color-mint-green: #C7CEEA;
+  --color-sunny-yellow: #FFDAC1;
+  --color-happy-orange: #FFD1B3;
+  --color-forest-green: #E2F0CB;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #fbfaf5 0%, #f0f7f4 100%);
+  overflow-x: hidden;
+}
+
+/* Efecto de nube flotante */
+@keyframes floatCloud {
+  0% {
+    transform: translateX(-10%) translateY(0px);
+  }
+  50% {
+    transform: translateX(5%) translateY(-10px);
+  }
+  100% {
+    transform: translateX(-10%) translateY(0px);
+  }
+}
+.cloud-slow {
+  animation: floatCloud 20s ease-in-out infinite;
+}
+.cloud-fast {
+  animation: floatCloud 12s ease-in-out infinite;
+}
+
+/* Animación suave para globos */
+@keyframes floatBalloon {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(3deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+.balloon-anim {
+  animation: floatBalloon 6s ease-in-out infinite;
+}
+
+/* Pulso suave y divertido para elementos clave */
+@keyframes playfulPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+.pulse-card {
+  animation: playfulPulse 4s infinite;
+}
+
+/* Patrón de fondo sutil para la temática infantil */
+.kids-pattern {
+  background-image:
+    radial-gradient(#ffb7b2 1.5px, transparent 1.5px),
+    radial-gradient(#c7ceea 1.5px, #fbfaf5 1.5px);
+  background-size: 40px 40px;
+  background-position:
+    0 0,
+    20px 20px;
+  opacity: 0.5;
+}
+
+/* Estilo para los confetis del canvas */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Efecto Washi Tape para sostener la foto */
+.washi-tape-pink {
+  background: rgba(255, 183, 178, 0.85);
+  transform: rotate(-3deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.washi-tape-blue {
+  background: rgba(181, 226, 250, 0.85);
+  transform: rotate(4deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}

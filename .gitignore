@@ -1,0 +1,29 @@
+# Astro - Salidas de compilación y caché
+dist/
+.astro/
+
+# Dependencias (Bun y pnpm)
+node_modules/
+.pnpm-store/
+bun.lockb
+
+# Entorno y Secretos
+.env
+.env.production
+*.local
+
+# Caché de herramientas de desarrollo (Vite, TypeScript, etc.)
+.cache/
+.vite/
+.eslintcache
+
+# Logs de errores
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

@@ -1,0 +1,60 @@
+---
+interface Props {
+  rutaFoto?: string;
+  pieFoto?: string;
+  detallesFoto?: string;
+}
+
+const {
+  rutaFoto = "/foto.png",
+  pieFoto = '"Aventuras bajo el sol y entre árboles"',
+  detallesFoto = "Clase de 3° de Preescolar - Escuela Rural Benito Juárez"
+} = Astro.props;
+---
+
+<!-- SECCIÓN DE LA FOTO DEL GRUPO (Estilo Polaroid Rústica) -->
+<div class="max-w-xl mx-auto my-10 relative">
+  <!-- Cintas washi tape decorativas -->
+  <div
+    class="absolute -top-6 left-1/4 w-28 h-8 washi-tape-pink z-20 text-xs font-bold text-pink-700 flex items-center justify-center select-none"
+  >
+    ¡Los Pequeños!
+  </div>
+  <div
+    class="absolute -top-5 right-1/4 w-24 h-8 washi-tape-blue z-20 text-xs font-bold text-blue-700 flex items-center justify-center select-none"
+  >
+    Generación 2026
+  </div>
+
+  <!-- Marco Polaroid -->
+  <div
+    class="bg-white p-4 pb-8 rounded-lg shadow-lg border border-slate-100 transform -rotate-1 hover:rotate-0 transition-transform duration-300"
+  >
+    <div
+      class="overflow-hidden rounded bg-slate-50 relative aspect-[16/10] border border-slate-100"
+    >
+      <!-- Imagen del Grupo -->
+      <img
+        id="group-photo"
+        src={rutaFoto}
+        alt="Foto del Grupo de Kínder"
+        class="w-full h-full object-cover"
+        onerror="this.src = '/foto.png';"
+      />
+      <!-- Pequeño sticker de flores decorativas -->
+      <div
+        class="absolute bottom-2 right-2 bg-yellow-100/90 text-amber-600 px-2 py-1 rounded text-xs font-bold shadow-sm"
+      >
+        🌾 Orgullo Escolar
+      </div>
+    </div>
+    <div class="mt-4 text-center">
+      <p class="font-bold text-slate-700 text-lg md:text-xl">
+        {pieFoto}
+      </p>
+      <p class="text-xs text-slate-400 mt-1">
+        {detallesFoto}
+      </p>
+    </div>
+  </div>
+</div>

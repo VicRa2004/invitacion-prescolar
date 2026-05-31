@@ -1,0 +1,58 @@
+---
+import Plantilla from "../layouts/Plantilla.astro";
+import Confeti from "../components/Confeti.astro";
+import SolYNubes from "../components/SolYNubes.astro";
+import Bienvenida from "../components/Bienvenida.astro";
+import TarjetaInformacion from "../components/TarjetaInformacion.astro";
+import PiePagina from "../components/PiePagina.astro";
+---
+
+<Plantilla titulo="¡Nuestra Gran Aventura! - Escuela Rural">
+  <Confeti />
+  <SolYNubes />
+
+  <main class="relative z-10 max-w-4xl mx-auto px-4 pt-12 md:pt-20">
+    <Bienvenida />
+
+    <!-- Tarjetas de Información: Fecha, Hora, Lugar, Colaboración -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <TarjetaInformacion
+        bordeColor="border-pink-300"
+        iconoClass="fa-regular fa-calendar-days"
+        iconoBg="bg-pink-100 text-pink-500"
+        titulo="¿Qué día será?"
+        detallePrincipal="Jueves, 09 de Julio de 2026"
+        detalleSecundario="¡Una fecha muy especial marcada en el calendario!"
+      />
+
+      <TarjetaInformacion
+        bordeColor="border-amber-300"
+        iconoClass="fa-regular fa-clock"
+        iconoBg="bg-amber-100 text-amber-600"
+        titulo="¿A qué hora?"
+        detallePrincipal="3:30 P.M."
+        detalleSecundario="Les agradecemos su puntualidad para disfrutar de todo el evento."
+      />
+
+      <TarjetaInformacion
+        bordeColor="border-emerald-300"
+        iconoClass="fa-solid fa-location-dot"
+        iconoBg="bg-emerald-100 text-emerald-600"
+        titulo="¿Dónde nos reuniremos?"
+        detallePrincipal='Palapa "QUINTA EL GUASIMO"'
+        detalleSecundario="Ubicada en la R/a Jolochero, Centro, Tabasco."
+      />
+
+      <TarjetaInformacion
+        bordeColor="border-purple-300"
+        iconoClass="fa-solid fa-ship"
+        iconoBg="bg-purple-100 text-purple-500"
+        titulo="Nota sobre el Camino"
+        detallePrincipal="Del otro lado del río"
+        detalleSecundario="Recuerde prever sus tiempos para el cruce del río y viajar con total seguridad."
+      />
+    </div>
+  </main>
+
+  <PiePagina />
+</Plantilla>
