@@ -1,0 +1,188 @@
+---
+---
+<!-- Contenedor para las burbujas -->
+<div id="bubble-container" class="fixed inset-0 pointer-events-none z-20 overflow-hidden"></div>
+
+<style is:global>
+  /* Animación para que las burbujas floten hacia arriba */
+  @keyframes floatUp {
+    0% {
+      transform: translateY(105vh) translateX(0) scale(0.8);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.7;
+    }
+    90% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(-15vh) translateX(var(--wobble)) scale(1.15);
+      opacity: 0;
+    }
+  }
+
+  .bubble-element {
+    position: absolute;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto;
+    /* Aspecto realista y brillante de burbuja de jabón */
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.65) 0%,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.05) 50%,
+      var(--bubble-color-inner) 80%,
+      var(--bubble-color-edge) 100%
+    );
+    border: 1px solid var(--bubble-color-border);
+    box-shadow: 
+      inset 0 0 12px rgba(255, 255, 255, 0.5),
+      0 2px 6px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(0.3px);
+    transition: transform 0.1s ease-out;
+  }
+
+  /* Efecto de brillo de luz (reflejo) en la burbuja */
+  .bubble-element::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    width: 25%;
+    height: 25%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    transform: rotate(-30deg);
+  }
+
+  .bubble-element:hover {
+    transform: scale(1.1);
+  }
+</style>
+
+<script>
+  const MAX_BUBBLES = 12;
+  const bubbleContainer = document.getElementById("bubble-container");
+
+  // Colores pastel para darle variedad y colorido a las burbujas
+  const bubbleTints = [
+    { inner: 'rgba(255, 183, 178, 0.2)', edge: 'rgba(255, 183, 178, 0.4)', border: 'rgba(255, 183, 178, 0.6)' }, // Rosa
+    { inner: 'rgba(181, 226, 250, 0.2)', edge: 'rgba(181, 226, 250, 0.4)', border: 'rgba(181, 226, 250, 0.6)' }, // Azul
+    { inner: 'rgba(225, 190, 231, 0.2)', edge: 'rgba(225, 190, 231, 0.4)', border: 'rgba(225, 190, 231, 0.6)' }, // Morado
+    { inner: 'rgba(199, 206, 234, 0.2)', edge: 'rgba(199, 206, 234, 0.4)', border: 'rgba(199, 206, 234, 0.6)' }, // Verde menta
+    { inner: 'rgba(255, 218, 193, 0.2)', edge: 'rgba(255, 218, 193, 0.4)', border: 'rgba(255, 218, 193, 0.6)' }  // Amarillo
+  ];
+
+  // Sonido de pop más rápido y agudo diseñado específicamente para las burbujas
+  function playBubblePopSound() {
+    try {
+      const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new AudioCtxClass();
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.type = "sine";
+      // Tono más agudo que sube rápidamente
+      osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.06);
+      
+      gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.07);
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.09);
+    } catch (e) {
+      console.log("Audio interactivo esperando acción del usuario.");
+    }
+  }
+
+  function createBubble() {
+    if (!bubbleContainer) return;
+    
+    // Validar el número actual de burbujas en pantalla
+    const currentBubbles = bubbleContainer.querySelectorAll(".bubble-element");
+    if (currentBubbles.length >= MAX_BUBBLES) return;
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble-element";
+
+    // Tamaño aleatorio entre 35px y 70px
+    const size = Math.random() * 35 + 35;
+    bubble.style.width = `${size}px`;
+    bubble.style.height = `${size}px`;
+
+    // Posición horizontal aleatoria
+    const leftPos = Math.random() * 92 + 4; // Entre 4% y 96%
+    bubble.style.left = `${leftPos}%`;
+
+    // Elegir tintado aleatorio
+    const tint = bubbleTints[Math.floor(Math.random() * bubbleTints.length)];
+    bubble.style.setProperty('--bubble-color-inner', tint.inner);
+    bubble.style.setProperty('--bubble-color-edge', tint.edge);
+    bubble.style.setProperty('--bubble-color-border', tint.border);
+
+    // Movimiento oscilatorio lateral y tiempo aleatorio de flotación
+    const duration = Math.random() * 6 + 9; // Entre 9s y 15s
+    const wobble = (Math.random() * 80 - 40); // Oscilación de -40px a 40px
+    bubble.style.setProperty('--wobble', `${wobble}px`);
+    bubble.style.animation = `floatUp ${duration}s linear forwards`;
+
+    // Evento al reventarse (click o touch)
+    const popAction = (e: MouseEvent | TouchEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      
+      playBubblePopSound();
+
+      // Detonar confeti en la ubicación de la burbuja
+      let clientX = 0;
+      let clientY = 0;
+
+      if (e instanceof MouseEvent) {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      } else if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        const rect = bubble.getBoundingClientRect();
+        clientX = rect.left + rect.width / 2;
+        clientY = rect.top + rect.height / 2;
+      }
+
+      if (typeof (window as any).launchConfettiAt === "function") {
+        (window as any).launchConfettiAt(clientX, clientY);
+      }
+
+      // Animación de pop y remoción
+      bubble.style.transform = "scale(1.4)";
+      bubble.style.opacity = "0";
+      bubble.style.pointerEvents = "none";
+      setTimeout(() => {
+        bubble.remove();
+      }, 100);
+    };
+
+    bubble.addEventListener("mousedown", popAction);
+    bubble.addEventListener("touchstart", popAction, { passive: false });
+
+    // Remover automáticamente cuando termine su animación de flotado
+    bubble.addEventListener("animationend", () => {
+      bubble.remove();
+    });
+
+    bubbleContainer.appendChild(bubble);
+  }
+
+  // Generar burbujas a intervalos aleatorios
+  setInterval(createBubble, 2200);
+  
+  // Crear la primera burbuja después de 1 segundo
+  setTimeout(createBubble, 1000);
+</script>

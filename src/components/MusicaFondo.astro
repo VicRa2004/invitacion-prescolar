@@ -1,0 +1,217 @@
+---
+---
+<!-- Botón Flotante para la Música de Fondo -->
+<div class="fixed bottom-6 right-6 z-50">
+  <button
+    id="music-toggle-btn"
+    class="w-14 h-14 bg-gradient-to-br from-pink-300 to-amber-200 text-pink-700 rounded-full shadow-lg border-4 border-white flex items-center justify-center hover:scale-110 active:scale-95 transition-transform duration-200 cursor-pointer focus:outline-none group relative"
+    aria-label="Reproducir música de fondo"
+  >
+    <!-- Icono de Música -->
+    <i id="music-icon" class="fa-solid fa-music text-xl"></i>
+    
+    <!-- Efecto de nota flotante al pasar el cursor -->
+    <span class="absolute -top-10 bg-slate-800 text-white text-xs font-bold px-2 py-1 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+      Música de fondo
+    </span>
+  </button>
+</div>
+
+<style>
+  /* Animación de giro para el botón cuando esté sonando */
+  @keyframes spinSlow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .music-playing-anim {
+    animation: spinSlow 8s linear infinite;
+  }
+</style>
+
+<script>
+  // Frecuencias de las notas musicales
+  const notes: Record<string, number> = {
+    'C3': 130.81, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00,
+    'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
+    'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'B5': 987.77,
+    'C6': 1046.50
+  };
+
+  // Partitura: "Twinkle Twinkle Little Star" con acordes de bajo para un sonido enriquecido
+  const melody = [
+    { m: 'C5', b: 'C3' }, { m: 'C5', b: null }, { m: 'G5', b: 'E3' }, { m: 'G5', b: null },
+    { m: 'A5', b: 'F3' }, { m: 'A5', b: null }, { m: 'G5', b: 'C3' }, { m: null,   b: null },
+    { m: 'F5', b: 'F3' }, { m: 'F5', b: null }, { m: 'E5', b: 'C3' }, { m: 'E5', b: null },
+    { m: 'D5', b: 'G3' }, { m: 'D5', b: null }, { m: 'C5', b: 'C3' }, { m: null,   b: null },
+    
+    { m: 'G5', b: 'C3' }, { m: 'G5', b: null }, { m: 'F5', b: 'D3' }, { m: 'F5', b: null },
+    { m: 'E5', b: 'C3' }, { m: 'E5', b: null }, { m: 'D5', b: 'G3' }, { m: null,   b: null },
+    { m: 'G5', b: 'C3' }, { m: 'G5', b: null }, { m: 'F5', b: 'D3' }, { m: 'F5', b: null },
+    { m: 'E5', b: 'C3' }, { m: 'E5', b: null }, { m: 'D5', b: 'G3' }, { m: null,   b: null },
+
+    { m: 'C5', b: 'C3' }, { m: 'C5', b: null }, { m: 'G5', b: 'E3' }, { m: 'G5', b: null },
+    { m: 'A5', b: 'F3' }, { m: 'A5', b: null }, { m: 'G5', b: 'C3' }, { m: null,   b: null },
+    { m: 'F5', b: 'F3' }, { m: 'F5', b: null }, { m: 'E5', b: 'C3' }, { m: 'E5', b: null },
+    { m: 'D5', b: 'G3' }, { m: 'D5', b: null }, { m: 'C5', b: 'C3' }, { m: null,   b: null }
+  ];
+
+  let isPlaying = false;
+  let audioCtx: AudioContext | null = null;
+  let masterGain: GainNode | null = null;
+  let nextNoteTime = 0.0;
+  let currentStep = 0;
+  let timerId: any = null;
+
+  const tempo = 125; // Ritmo calmado de caja de música
+  const stepDuration = 60 / tempo / 2; // Duración de una corchea (~0.24 segundos)
+
+  // Inicializar el contexto de audio
+  function initAudio() {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    audioCtx = new AudioContextClass();
+    
+    masterGain = audioCtx.createGain();
+    // Volumen maestro muy suave para no molestar
+    masterGain.gain.value = 0.22;
+    masterGain.connect(audioCtx.destination);
+  }
+
+  // Sintetizar el sonido metálico dulce de la caja de música
+  function playMusicBoxNote(freq: number, startTime: number, peakVolume: number, isMelody: boolean) {
+    if (!audioCtx || !masterGain) return;
+
+    // Oscilador principal (onda senoidal para tono puro)
+    const osc1 = audioCtx.createOscillator();
+    // Armónico para el brillo metálico de los dientes de metal
+    const osc2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(freq, startTime);
+
+    // Armónico superior (octava alta + vibrato/detune leve)
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(freq * 2, startTime);
+
+    // Envolvente de volumen (ataque instantáneo y caída exponencial larga)
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(peakVolume, startTime + 0.005);
+    
+    const decayTime = isMelody ? 1.6 : 0.9;
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + decayTime);
+
+    osc1.connect(gainNode);
+
+    // Ajustar el brillo del armónico chime
+    const chimeGain = audioCtx.createGain();
+    chimeGain.gain.setValueAtTime(isMelody ? 0.12 : 0.04, startTime);
+    osc2.connect(chimeGain);
+    chimeGain.connect(gainNode);
+
+    gainNode.connect(masterGain);
+
+    osc1.start(startTime);
+    osc2.start(startTime);
+    
+    // Parar osciladores después de la caída
+    osc1.stop(startTime + decayTime + 0.1);
+    osc2.stop(startTime + decayTime + 0.1);
+  }
+
+  // Programar las notas del bucle
+  function scheduleNote(stepIndex: number, time: number) {
+    const step = melody[stepIndex];
+    if (step.m && notes[step.m]) {
+      playMusicBoxNote(notes[step.m], time, 0.15, true); // Melodía principal
+    }
+    if (step.b && notes[step.b]) {
+      playMusicBoxNote(notes[step.b], time, 0.09, false); // Acompañamiento / Bajo
+    }
+  }
+
+  // Planificador en tiempo real
+  function scheduler() {
+    if (!audioCtx) return;
+    while (nextNoteTime < audioCtx.currentTime + 0.1) {
+      scheduleNote(currentStep, nextNoteTime);
+      nextNoteTime += stepDuration;
+      currentStep = (currentStep + 1) % melody.length;
+    }
+  }
+
+  // Alternar reproducción
+  function toggleMusic() {
+    const btn = document.getElementById('music-toggle-btn');
+    const icon = document.getElementById('music-icon');
+    if (!btn || !icon) return;
+
+    if (!audioCtx) {
+      initAudio();
+    }
+
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    if (!isPlaying) {
+      isPlaying = true;
+      nextNoteTime = audioCtx!.currentTime + 0.05;
+      // Iniciar planificador
+      timerId = setInterval(scheduler, 50);
+      
+      // Actualizar interfaz
+      btn.classList.add('music-playing-anim');
+      btn.classList.remove('from-pink-300', 'to-amber-200');
+      btn.classList.add('from-emerald-300', 'to-teal-200', 'text-emerald-800');
+      icon.className = 'fa-solid fa-volume-high text-xl';
+    } else {
+      isPlaying = false;
+      clearInterval(timerId);
+      timerId = null;
+      
+      // Detener ganancia gradualmente si se desea, o suspender contexto
+      if (audioCtx) {
+        audioCtx.suspend();
+      }
+
+      // Actualizar interfaz
+      btn.classList.remove('music-playing-anim');
+      btn.classList.remove('from-emerald-300', 'to-teal-200', 'text-emerald-800');
+      btn.classList.add('from-pink-300', 'to-amber-200', 'text-pink-700');
+      icon.className = 'fa-solid fa-music text-xl';
+    }
+  }
+
+  // Configurar Listener en el botón
+  const musicBtn = document.getElementById('music-toggle-btn');
+  if (musicBtn) {
+    musicBtn.addEventListener('click', toggleMusic);
+  }
+
+  // Autoplay en la primera interacción del usuario en la pantalla
+  // (Requerido debido a las restricciones de seguridad sobre reproducción automática de audio en navegadores)
+  function autoPlayOnFirstInteraction(e: Event) {
+    const btn = document.getElementById('music-toggle-btn');
+    if (btn && btn.contains(e.target as Node)) {
+      removeInteractionListeners();
+      return;
+    }
+    
+    if (!isPlaying) {
+      toggleMusic();
+    }
+    removeInteractionListeners();
+  }
+
+  function removeInteractionListeners() {
+    document.removeEventListener('click', autoPlayOnFirstInteraction);
+    document.removeEventListener('touchstart', autoPlayOnFirstInteraction);
+  }
+
+  document.addEventListener('click', autoPlayOnFirstInteraction);
+  document.addEventListener('touchstart', autoPlayOnFirstInteraction);
+</script>

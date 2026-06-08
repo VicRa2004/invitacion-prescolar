@@ -5,19 +5,27 @@ import SolYNubes from "../components/SolYNubes.astro";
 import Bienvenida from "../components/Bienvenida.astro";
 import TarjetaInformacion from "../components/TarjetaInformacion.astro";
 import PiePagina from "../components/PiePagina.astro";
+import MusicaFondo from "../components/MusicaFondo.astro";
+import CuentaRegresiva from "../components/CuentaRegresiva.astro";
+import Burbujas from "../components/Burbujas.astro";
 ---
 
 <Plantilla titulo="¡Nuestra Gran Aventura! - Escuela Rural">
   <Confeti />
   <SolYNubes />
+  <Burbujas />
+  <MusicaFondo />
 
   <main class="relative z-10 max-w-4xl mx-auto px-4 pt-12 md:pt-20">
     <Bienvenida />
 
+    <CuentaRegresiva />
+
     <!-- Tarjetas de Información: Fecha, Hora, Lugar, Colaboración -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
       <TarjetaInformacion
-        bordeColor="border-pink-300"
+        bordeColor="border-pink-400"
+        bgGradient="from-white/95 to-pink-100/35"
         iconoClass="fa-regular fa-calendar-days"
         iconoBg="bg-pink-100 text-pink-500"
         titulo="¿Qué día será?"
@@ -26,7 +34,8 @@ import PiePagina from "../components/PiePagina.astro";
       />
 
       <TarjetaInformacion
-        bordeColor="border-amber-300"
+        bordeColor="border-amber-400"
+        bgGradient="from-white/95 to-amber-100/35"
         iconoClass="fa-regular fa-clock"
         iconoBg="bg-amber-100 text-amber-600"
         titulo="¿A qué hora?"
@@ -35,7 +44,8 @@ import PiePagina from "../components/PiePagina.astro";
       />
 
       <TarjetaInformacion
-        bordeColor="border-emerald-300"
+        bordeColor="border-emerald-400"
+        bgGradient="from-white/95 to-emerald-100/35"
         iconoClass="fa-solid fa-location-dot"
         iconoBg="bg-emerald-100 text-emerald-600"
         titulo="¿Dónde nos reuniremos?"
@@ -44,7 +54,8 @@ import PiePagina from "../components/PiePagina.astro";
       />
 
       <TarjetaInformacion
-        bordeColor="border-purple-300"
+        bordeColor="border-purple-400"
+        bgGradient="from-white/95 to-purple-100/35"
         iconoClass="fa-solid fa-ship"
         iconoBg="bg-purple-100 text-purple-500"
         titulo="Nota sobre el Camino"

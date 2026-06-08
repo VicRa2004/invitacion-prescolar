@@ -14,7 +14,7 @@
 
 body {
   font-family: var(--font-sans);
-  background: linear-gradient(135deg, #fbfaf5 0%, #f0f7f4 100%);
+  background: linear-gradient(135deg, #FFFDF0 0%, #FFF5CC 65%, #FFE5EC 100%);
   overflow-x: hidden;
 }
 
@@ -71,12 +71,16 @@ body {
 .kids-pattern {
   background-image:
     radial-gradient(#ffb7b2 1.5px, transparent 1.5px),
-    radial-gradient(#c7ceea 1.5px, #fbfaf5 1.5px);
+    radial-gradient(#b5e2fa 1.5px, transparent 1.5px),
+    radial-gradient(#c7ceea 1.5px, transparent 1.5px),
+    radial-gradient(#ffd1b3 1.5px, transparent 1.5px);
   background-size: 40px 40px;
   background-position:
     0 0,
-    20px 20px;
-  opacity: 0.5;
+    20px 20px,
+    20px 0,
+    0 20px;
+  opacity: 0.55;
 }
 
 /* Estilo para los confetis del canvas */

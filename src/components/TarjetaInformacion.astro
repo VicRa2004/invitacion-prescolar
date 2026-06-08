@@ -6,6 +6,7 @@ interface Props {
   titulo: string;
   detallePrincipal: string;
   detalleSecundario: string;
+  bgGradient?: string;
 }
 
 const {
@@ -15,11 +16,12 @@ const {
   titulo,
   detallePrincipal,
   detalleSecundario,
+  bgGradient = "from-white/90 to-white/90",
 } = Astro.props;
 ---
 
 <div
-  class={`bg-white/85 backdrop-blur-sm p-6 rounded-2xl border-b-8 shadow-md flex items-start space-x-4 transition-transform hover:-translate-y-1 ${bordeColor}`}
+  class={`bg-gradient-to-br ${bgGradient} backdrop-blur-sm p-6 rounded-2xl border-b-8 shadow-md flex items-start space-x-4 transition-transform hover:-translate-y-1 ${bordeColor}`}
 >
   <div class={`p-4 rounded-xl text-2xl flex-shrink-0 ${iconoBg}`}>
     <i class={iconoClass}></i>
